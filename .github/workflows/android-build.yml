@@ -1,0 +1,35 @@
+name: Build STRIKEPOINT Android APK
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Godot Android project
+        uses: firebelley/godot-export@v6.1.0
+        with:
+          godot_executable_download_url: https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip
+          godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz
+          relative_project_path: ./
+          archive_output: true
+          export_debug: true
+          export_preset: Android
+          output_directory: build
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: STRIKEPOINT-Android-APK
+          path: build/**/*.apk
